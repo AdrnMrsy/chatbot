@@ -1,0 +1,161 @@
+# const chatBox = document.getElementById("chat-box");
+# const userInputBox = document.getElementById("userInput");
+# let currentAction = null; // Keeps track of the current action (summarize, availability, suggest)
+
+# /**
+#  * Adds a message to the chat box.
+#  * @param {string} content - The message content.
+#  * @param {string} role - The role of the sender ('user' or 'bot').
+#  */
+# function addMessageToChat(content, role) {
+#     const messageDiv = document.createElement("div");
+#     messageDiv.classList.add("message", `${role}-message`);
+
+#     const messageContent = document.createElement("div");
+#     messageContent.classList.add("message-content");
+#     messageContent.innerHTML = content;
+#     messageDiv.appendChild(messageContent);
+#     chatBox.appendChild(messageDiv);
+#     chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the bottom
+# }
+
+# /**
+#  * Sends a request to the server and handles the response.
+#  * @param {string} url - The endpoint URL.
+#  * @param {string} method - The HTTP method (GET, POST, etc.).
+#  * @param {object|null} body - The request body, if any.
+#  */
+# async function sendRequest(url, method, body = null) {
+#     try {
+#         const options = {
+#             method,
+#             headers: { "Content-Type": "application/json" },
+#         };
+#         if (body) options.body = JSON.stringify(body);
+
+#         const response = await fetch(url, options);
+#         const data = await response.json();
+
+#         if (response.ok) {
+#             // Handling different types of responses
+#             const formattedAnswer = data.answer.replace(/\n/g, "<br>");
+#                 addMessageToChat(formattedAnswer, "bot");
+#             // if (data.summary) {
+#             //     addMessageToChat(data.summary, "bot");
+#             // } else if (data.suggested_books && data.suggested_books.length > 0) {
+#             //     const bookList = data.suggested_books
+#             //         .map(b => `${b.title} by ${b.author}`)
+#             //         .join("\n");
+#             //     addMessageToChat(bookList, "bot");
+#             // } else if (data.related_books && data.related_books.length > 0) {
+#             //     const bookList = data.related_books
+#             //         .map(b => `${b.title} by ${b.author} To check availability of the book press "Check Availabilty" button`)
+#             //         .join("\n");
+#             //     addMessageToChat(bookList, "bot");
+#             // } else if (data.title && data.author && data.availability && data.shelflocation) {
+#             //     const message = `${data.title} by ${data.author} is ${data.availability} located at ${data.shelflocation}`;
+#             //     addMessageToChat(message, "bot");
+#             // } else if (data.answer) {
+#             //     // Convert \n to <br> for line breaks
+#             //     const formattedAnswer = data.answer.replace(/\n/g, "<br>");
+#             //     addMessageToChat(formattedAnswer, "bot");
+#             // } else {
+#             //     addMessageToChat("No relevant data found.", "bot");
+#             // }
+#         } else {
+#             // Handling HTTP errors
+#             addMessageToChat(data.error || `Error ${response.status}: ${response.statusText}`, "bot");
+#         }
+#     } catch (error) {
+#         console.error("Error:", error);
+#         addMessageToChat("An error occurred. Please try again.", "bot");
+#     }
+# }
+
+
+# /**
+#  * Handles user input and performs actions based on the current context.
+#  */
+# function handleUserInput() {
+#     const userInput = userInputBox.value.trim();
+#     if (!userInput) return;
+
+#     addMessageToChat(userInput, "user");
+#     userInputBox.value = ""; // Clear the input box
+#     sendRequest("/ask_question", "POST", { question: userInput });
+
+  
+
+#     // switch (currentAction) {
+#     //     case "summarize":
+#     //         sendRequest("/summarize", "POST", { book_title: userInput });
+#     //         break;
+#     //     case "availability":
+#     //         const [title, author] = userInput.split(" by ");
+#     //         if (title && author) {
+#     //             sendRequest(
+#     //                 `/check_availability?book_title=${encodeURIComponent(title)}&author=${encodeURIComponent(author)}`,
+#     //                 "GET"
+#     //             );
+#     //         } else {
+#     //             addMessageToChat(
+#     //                 "Please provide the book title and author in the format: 'Title by Author'.",
+#     //                 "bot"
+#     //             );
+#     //         }
+#     //         break;
+#     //     case "suggest":
+#     //         sendRequest(`/suggest_books?genre=${encodeURIComponent(userInput)}`, "GET");
+#     //         break;
+#     //     case "related_books":
+#     //         sendRequest("/related_books", "POST", { question: userInput });
+#     //         break;
+#     //     case "ask_question":
+#     //         sendRequest("/ask_question", "POST", { question: userInput });
+#     //         break;
+#     //     default:
+#     //         addMessageToChat("Please select an action first by clicking a button.", "bot");
+#     //         break;
+#     // }
+
+#     // currentAction = null; // Reset the current action after handling
+# }
+
+# /**
+#  * Sets the current action and provides guidance to the user.
+#  * @param {string} action - The action to set.
+#  */
+# // function setAction(action) {
+# //     currentAction = action;
+# //     addMessageToChat("What question do you have?", "bot");
+
+# //     // switch (action) {
+# //     //     case "summarize":
+# //     //         addMessageToChat(
+# //     //             "Please enter the book title and author (e.g., '1984 by George Orwell').",
+# //     //             "bot"
+# //     //         );
+# //     //         break;
+# //     //     case "availability":
+# //     //         addMessageToChat(
+# //     //             "Please enter the book title and author to check availability (e.g., '1984 by George Orwell').",
+# //     //             "bot"
+# //     //         );
+# //     //         break;
+# //     //     case "suggest":
+# //     //         addMessageToChat("What genre are you interested in?", "bot");
+# //     //         break;
+# //     //     case "related_books":
+# //     //         addMessageToChat(
+# //     //             "What question do you have? I'll suggest related books.",
+# //     //             "bot"
+# //     //         );
+# //     //         break;
+# //     //     case "ask_question":
+# //     //         addMessageToChat("What question do you have?", "bot");
+# //     //         break;
+# //     //     default:
+# //     //         addMessageToChat("Action not recognized. Please try again.", "bot");
+# //     //         break;
+# //     // }
+# // }

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShelfSearch</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <div class="app-container">
+        <div class="fix">
+        <div class="logo1"><img src="/static/css/libris.png" alt="Logo">
+        </div>
+
+        <div class="chat-header">
+            <h1>Libris</h1>
+            
+        </div>
+         <div class="chatchat">
+            
+        <div class="chat-container">
+            
+            <div classname="chats">
+            <div class="chat-box" id="chat-box">
+                <div class="message bot-message">
+                    <div class="message-content">
+                        Hello, I'm Libris! ShelfSearch's AI-powered assistant for streamlined library management. I can help you search for books, provide recommendations, and make literature discovery fast and easy. How can I assist you today?                    </div>
+                </div>
+                
+            </div>
+        </div>
+                <div class="chat-input">
+                    <div class="input-container">
+                        <input 
+                            id="userInput" 
+                            type="text" 
+                            placeholder="Ask ShelfSearch" 
+                            onkeypress="if(event.key === 'Enter') handleUserInput();" 
+                        ><button 
+                        class="send-button" 
+                        onclick="handleUserInput()">
+                        <img src="https://img.icons8.com/?size=40&id=124436&format=png&color=0F2043"
+                        />
+                    </button></input>
+                        
+                    </div>
+                </div>
+                
+                
+            
+        </div>
+        <a href="index.html" class="return-btn">Return</a>
+    </div>
+    </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
